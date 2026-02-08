@@ -25,7 +25,6 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
             splitted_nodes.append(node)
             continue
 
-
         node_splitted_texts = node.text.split(delimiter)
         if len(node_splitted_texts) % 2 == 0:
             raise ValueError(f'Wrong amount of delimiters: {delimiter} in {node.text}')
