@@ -42,7 +42,7 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
 
 
 def extract_markdown_images(text):
-    markdown_image_pattern = r'\!{1}\[[a-zA-Z0-9 ]+\]\(https?:\/\/[a-zA-Z0-9./@]+\)'
+    markdown_image_pattern = r'\!{1}\[[a-zA-Z0-9."\'\-\_ ]+\]\((?:https?:\/\/|\/)[a-zA-Z0-9./@\'"\-\_]+\)'
     images = re.findall(markdown_image_pattern, text)
     text_url_tuples = []
     for img in images:
@@ -54,15 +54,14 @@ def extract_markdown_images(text):
     return text_url_tuples
 
 
+# without negative lookbehind seems impossible
 def extract_markdown_links(text):
-    markdown_link_pattern = r'[^!]\[[a-zA-Z0-9 ]+\]\(https?:\/\/[a-zA-Z0-9./@]+\)'
+    markdown_link_pattern = r'(?<!!)\[[a-zA-Z0-9."\'\-\_ ]+\]\((?:https?:\/\/|\/)[a-zA-Z0-9./@\'"\-\_]+\)'
     links = re.findall(markdown_link_pattern, text)
     text_link_tuples = []
     for link_ in links:
         txt, link = link_.split(']')
-        # careful [2:], because pattern matches like this: 
-        # ' [text](link)' with any char except ! on the left
-        txt = txt[2:]
+        txt = txt[1:]
         link = link[1:-1]
         text_link_tuples.append((txt, link))
     
